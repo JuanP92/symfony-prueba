@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
@@ -19,7 +20,11 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/create', name: 'app_user_create')]
-    public function create(Request $request, UserRepository $repository): JsonResponse
+    public function create(
+        Request $request,
+        UserRepository $repository,
+        ValidatorInterface $validator
+    ): JsonResponse
     {
         $data = $request->toArray();
 
@@ -28,6 +33,12 @@ class UserController extends AbstractController
         $user->setApellido($data['apellido']);
         $user->setEmail($data['email']);
         $user->setSexo($data['sexo']);
+
+        $errors = $validator->validate($user);
+
+        if(count($errors) > 0){
+            return new JsonResponse(['message'=>(string)$errors],400);
+        }
 
         $repository->add($user, true);
 
