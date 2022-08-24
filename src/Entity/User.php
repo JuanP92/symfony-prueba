@@ -3,18 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-enum GENERO: string{
-    case HOMBRE = "hombre";
-    case MUJER = "mujer";
-    public static function getGenero(){
-
-    }
-}
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`users`')]
@@ -89,7 +81,10 @@ class User
 
     public function getSexo(): ?string
     {
-        return $this->sexo;
+        $msg = 'Soy un' . (($this->sexo === 'mujer')?'a':'')
+            . ' '.$this->sexo;
+
+        return $msg;
     }
 
     public function setSexo(string $sexo): self

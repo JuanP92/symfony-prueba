@@ -125,10 +125,10 @@ class UserController extends AbstractController
         $json = new JsonResponse([
             'id'=>$user->getId(),
             'full_name'=>$user->getNombre().' '.$user->getApellido(),
-
+            'sexo'=>$user->getSexo()
         ]);
 
-        return $this->json($user);
+        return $json;
     }
 
 }
