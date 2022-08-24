@@ -41,8 +41,10 @@ class UserController extends AbstractController
             foreach ($errors as $error){
                 $msg[]=$error->getMessage();
             }
-            return new JsonResponse(['success'=>false,
-                'errors'=>$msg],400);
+            return new JsonResponse(
+                ['success'=>false,
+                'errors'=>$msg],
+                400);
         }
 
         $repository->add($user, true);
@@ -55,8 +57,9 @@ class UserController extends AbstractController
         $user = $repository->find($id);
 
         if(!$user){
-            return new JsonResponse(['success'=>false,
-                'message'=>'No user found']);
+            return new JsonResponse([
+                'success'=>false,
+                'message'=>'No user found'], 400);
         }
 
         $repository->remove($user, true);

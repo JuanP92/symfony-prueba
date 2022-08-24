@@ -3,6 +3,7 @@
 namespace App\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /** @ODM\Document */
 class Pedido
@@ -11,15 +12,22 @@ class Pedido
     private $id;
 
     /** @ODM\Field(type="int") */
+    #[Assert\NotBlank]
+    #[Assert\PositiveOrZero]
     private $user_id;
 
     /** @ODM\Field(type="int") */
+    #[Assert\NotBlank]
+    #[Assert\PositiveOrZero]
     private $cantidad;
 
     /** @ODM\Field(type="int") */
+    #[Assert\NotBlank]
+    #[Assert\PositiveOrZero]
     private $precio_unitario;
 
     /** @ODM\Field(type="string") */
+    #[Assert\NotBlank]
     private $nombre_producto;
 
     /**
