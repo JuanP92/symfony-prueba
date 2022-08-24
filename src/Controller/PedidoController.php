@@ -54,6 +54,28 @@ class PedidoController extends AbstractController
             'pedido'=> $pedido
         ]);
     }
+    #[Route('/pedido/{email}', name: 'app_pedido_list',methods: ['GET'])]
+    public function list(
+        string $email,
+        DocumentManager $manager,
+        UserRepository $users
+    ): JsonResponse
+    {
+        $user = $users->findOneBy(['email'=>$email]);
+        if(!$user){
+            return new JsonResponse([
+                'success'=>false,
+                'message'=>'User not found'], 400);
+        }
+
+        $repository = $manager->getRepository(Pedido::class);
+        $pedidos = $repository->findby(['user_id'=>$user->getId()]);
+        $response = new JsonResponse([
+            "data"=> $pedidos
+        ]);
+
+        return $response;
+    }
 
     #[Route('/pedido/update/{id}', name: 'app_pedido_update',methods: ['PUT'])]
     public function update(
