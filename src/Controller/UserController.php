@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,27 +29,19 @@ class UserController extends AbstractController
     ): JsonResponse
     {
         $data = $request->toArray();
-
         $user = new User();
-        $user->setNombre($data['nombre']);
-        $user->setApellido($data['apellido']);
-        $user->setEmail($data['email']);
-        $user->setSexo($data['sexo']);
-
+        $form = $this->createForm(UserType::class, $user);
+        $form->submit($data);
         $errors = $validator->validate($user);
-
-        if(count($errors) > 0){
+        if($errors->count()>0){
             $msg=[];
             foreach ($errors as $error){
                 $msg[]=$error->getMessage();
             }
-            return new JsonResponse(
-                ['success'=>false,
-                'errors'=>$msg],
-                400);
+            return $this->json(['errors'=>$msg],400);
         }
 
-        $repository->add($user, true);
+        //$repository->add($user, true);
 
         return $this->json(['success'=>true,'data'=>$user]);
     }
