@@ -84,7 +84,7 @@ class PedidoController extends AbstractController
         ]);
     }
 
-    #[Route('/pedido/delete/{id}', name: 'app_pedido_delete',methods: ['PUT'])]
+    #[Route('/pedido/delete/{id}', name: 'app_pedido_delete')]
     public function delete(
         string $id,
         DocumentManager $manager

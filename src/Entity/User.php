@@ -3,15 +3,25 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+enum GENERO: string{
+    case HOMBRE = "hombre";
+    case MUJER = "mujer";
+    public static function getGenero(){
+
+    }
+}
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`users`')]
 #[UniqueEntity('email')]
 class User
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -34,6 +44,7 @@ class User
     #[Assert\NotBlank]
     #[Assert\Choice(['hombre', 'mujer'])]
     private ?string $sexo = null;
+
 
     public function getId(): ?int
     {
