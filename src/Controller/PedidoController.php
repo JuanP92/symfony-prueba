@@ -19,7 +19,7 @@ class PedidoController extends AbstractController
 
         $data = $repository->findAll();
 
-        return $this->json([$data]);
+        return $this->json($data);
     }
 
     #[Route('/pedido/create', name: 'app_pedido_create',methods: ['POST'])]
