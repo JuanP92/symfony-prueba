@@ -70,11 +70,8 @@ class PedidoController extends AbstractController
 
         $repository = $manager->getRepository(Pedido::class);
         $pedidos = $repository->findby(['user_id'=>$user->getId()]);
-        $response = new JsonResponse([
-            "data"=> $pedidos
-        ]);
 
-        return $response;
+        return $this->json($pedidos);
     }
 
     #[Route('/pedido/update/{id}', name: 'app_pedido_update',methods: ['PUT'])]

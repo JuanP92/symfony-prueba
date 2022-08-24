@@ -3,6 +3,7 @@
 namespace App\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /** @ODM\Document */
@@ -108,6 +109,10 @@ class Pedido
     public function setNombreProducto($nombre_producto): void
     {
         $this->nombre_producto = $nombre_producto;
+    }
+
+    public function getTotal(): int{
+        return $this->cantidad*$this->precio_unitario;
     }
 
 
