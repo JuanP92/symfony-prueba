@@ -142,6 +142,4 @@ class User
         $this->sex = $sex;
         return $this;
     }
-
-
 }
