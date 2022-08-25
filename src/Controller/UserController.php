@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
-    #[Route('/user', name: 'app_user',methods: ['GET'])]
+    #[Route('/user/list', name: 'app_user_list',methods: ['GET'])]
     public function index(UserRepository $repository): JsonResponse
     {
         $users = $repository->findAll();
@@ -41,7 +41,7 @@ class UserController extends AbstractController
             return $this->json(['errors'=>$msg],400);
         }
 
-        //$repository->add($user, true);
+        $repository->add($user, true);
 
         return $this->json(['success'=>true,'data'=>$user]);
     }
@@ -50,36 +50,28 @@ class UserController extends AbstractController
     public function update(
         int $id,
         ManagerRegistry $doctrine,
+        UserRepository $repository,
         Request $request,
         ValidatorInterface $validator
-    ): JsonResponse {
-        $repository = $doctrine->getRepository(User::class);
+    ): JsonResponse
+    {
         $manager = $doctrine->getManager();
         $user = $repository->find($id);
-
         if(!$user){
-            return new JsonResponse([
-                'success'=>false,
-                'message'=>'User not found'], 400);
+            return $this->json(['message'=>'User not found'], 400);
         }
 
         $data = $request->toArray();
-        $user->setNombre($data['nombre']);
-        $user->setApellido($data['apellido']);
-        $user->setEmail($data['email']);
-        $user->setSexo($data['sexo']);
-
+        $form = $this->createForm(UserType::class, $user);
+        $form->submit($data);
         $errors = $validator->validate($user);
-
         if(count($errors) > 0){
             $msg=[];
             foreach ($errors as $error){
                 $msg[]=$error->getMessage();
             }
-            return new JsonResponse(
-                ['success'=>false,
-                    'errors'=>$msg],
-                400);
+            return $this->json([
+                    'errors'=>$msg],400);
         }
 
         $manager->flush();
@@ -88,12 +80,11 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/delete/{id}', name: 'app_user_delete')]
-    public function delete(int $id, UserRepository $repository): JsonResponse {
+    public function delete(int $id, UserRepository $repository): JsonResponse
+    {
         $user = $repository->find($id);
-
         if(!$user){
-            return new JsonResponse([
-                'success'=>false,
+            return $this->json([
                 'message'=>'User not found'], 400);
         }
 
@@ -102,7 +93,7 @@ class UserController extends AbstractController
         return $this->json(['success'=>true,'user'=>$user]);
     }
 
-    #[Route('/user/{email}', name: 'app_user_get',methods: ['GET'])]
+    #[Route('/user/detail/{email}', name: 'app_user_get',methods: ['GET'])]
     public function get(
         string $email,
         UserRepository $repository
@@ -110,18 +101,10 @@ class UserController extends AbstractController
     {
         $user = $repository->findOneBy(['email'=>$email]);
         if(!$user){
-            return new JsonResponse([
-                'success'=>false,
+            return $this->json([
                 'message'=>'User not found'], 400);
         }
 
-        $json = new JsonResponse([
-            'id'=>$user->getId(),
-            'full_name'=>$user->getNombre().' '.$user->getApellido(),
-            'sexo'=>$user->getSexo()
-        ]);
-
-        return $json;
+        return $this->json($user);
     }
-
 }
