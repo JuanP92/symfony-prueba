@@ -58,7 +58,7 @@ class UserController extends AbstractController
         $manager = $doctrine->getManager();
         $user = $repository->find($id);
         if (!$user) {
-            return $this->json(['message' => 'User not found'], 400);
+            return $this->json(['message' => 'User not found'], 404);
         }
 
         $data = $request->toArray();
@@ -85,7 +85,7 @@ class UserController extends AbstractController
         $user = $repository->find($id);
         if (!$user) {
             return $this->json([
-                'message' => 'User not found'], 400);
+                'message' => 'User not found'], 404);
         }
 
         $repository->remove($user, true);
@@ -102,7 +102,7 @@ class UserController extends AbstractController
         $user = $repository->findOneBy(['email' => $email]);
         if (!$user) {
             return $this->json([
-                'message' => 'User not found'], 400);
+                'message' => 'User not found'], 404);
         }
 
         return $this->json($user);
