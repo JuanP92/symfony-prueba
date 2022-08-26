@@ -29,29 +29,13 @@ class User
 
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank]
-    #[Assert\Email]
+    #[Assert\Email(message:"email is not valid")]
     private string $email;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Choice(['hombre', 'mujer'])]
+    #[Assert\Choice(choices:['hombre', 'mujer'],message: "choice error")]
     private string $sex;
-
-    /**
-     * @param int $id
-     * @param string $name
-     * @param string $surname
-     * @param string $email
-     * @param string $sex
-     */
-    public function __construct(int $id, string $name, string $surname, string $email, string $sex)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->surname = $surname;
-        $this->email = $email;
-        $this->sex = $sex;
-    }
 
     /**
      * @return int
@@ -141,5 +125,15 @@ class User
     {
         $this->sex = $sex;
         return $this;
+    }
+
+    public function getSexFormat(): string
+    {
+        return "soy un".(($this->sex==="mujer")?"a ":" ").$this->sex;
+    }
+
+    public  function getFullName(): string
+    {
+        return $this->name." ".$this->surname;
     }
 }
